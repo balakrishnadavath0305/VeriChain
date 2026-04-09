@@ -1,0 +1,60 @@
+# ===========================
+# SECRETS — NEVER COMMIT THESE
+# ===========================
+.env
+.env.local
+.env.production
+.env.*.local
+*.env
+
+# ===========================
+# Dependencies
+# ===========================
+node_modules/
+.pnp
+.pnp.js
+
+# ===========================
+# Build outputs
+# ===========================
+dist/
+build/
+.vite/
+out/
+
+# ===========================
+# OS / Editor files
+# ===========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ===========================
+# Logs
+# ===========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===========================
+# Hardhat / Blockchain
+# ===========================
+cache/
+artifacts/
+typechain-types/
+blockchain/node_modules/
+
+# ===========================
+# Misc
+# ===========================
+*.pem
+.vercel
+.netlify

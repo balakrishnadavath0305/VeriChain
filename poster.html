@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VeriChain Poster Presentation</title>
+  <style>
+    /* ─── PRINT SETUP & RESET ─── */
+    @page { size: A2 portrait; margin: 0; }
+    
+    @media print {
+      html, body {
+        width: 100vw; height: 100vh; margin: 0 !important; padding: 0 !important; overflow: hidden !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      .poster-container {
+        width: 100vw !important; height: 100vh !important; max-height: 100vh !important; margin: 0 !important; padding: 15px 25px !important; box-sizing: border-box !important; border: none !important; box-shadow: none !important; transform: none !important; page-break-after: avoid; page-break-before: avoid; page-break-inside: avoid;
+      }
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+
+    body { margin: 0; padding: 0px; background: #333; display: flex; justify-content: center; overflow: auto; }
+
+    /* ─── POSTER CANVAS Dimension ─── */
+    .poster-container {
+      width: 1100px;
+      height: 1555px; /* A-series aspect ratio */
+      background: linear-gradient(135deg, #dbe4ef 0%, #ffffff 40%, #eef3fb 70%, #c8d8ea 100%);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); position: relative; overflow: hidden;
+      padding: 20px 30px; display: flex; flex-direction: column; gap: 12px;
+    }
+    
+    .poster-container::before { content: ''; position: absolute; top: -150px; left: -150px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(144, 186, 255, 0.4) 0%, transparent 60%); z-index: 0; pointer-events: none; }
+    .poster-container::after { content: ''; position: absolute; bottom: -200px; right: -200px; width: 800px; height: 800px; background: radial-gradient(circle, rgba(120, 150, 255, 0.2) 0%, transparent 60%); z-index: 0; pointer-events: none; }
+
+    .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 12px; flex: 1; height: 100%; min-height: 0; }
+
+    /* ─── TOP HEADER ─── */
+    .top-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+    .logo-container { flex: 0 0 160px; display: flex; align-items: center; justify-content: flex-start; }
+    .logo-container img { max-width: 100%; max-height: 90px; object-fit: contain; }
+    .center-title-container { flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .expo-title { background: linear-gradient(90deg, #1b365d 0%, #295ab0 50%, #1b365d 100%); color: white; padding: 4px 25px 8px; font-size: 16px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; clip-path: polygon(3% 0, 97% 0, 100% 100%, 0% 100%); margin-bottom: -10px; z-index: 2; }
+    .top-header h1 { color: #0d2c6b; font-size: 30px; margin: 12px 0 2px 0; font-weight: 900; letter-spacing: 0.5px; }
+    .right-spacer { flex: 0 0 160px; }
+
+    /* ─── TEAM DETAILS ─── */
+    .team-details { background: rgba(255, 255, 255, 0.9); border-radius: 6px; border-left: 8px solid #2a6acb; flex-shrink: 0; }
+    .card-header.bg-team { background: linear-gradient(90deg, #1b365d 0%, #3a75d5 100%); padding: 5px 15px; font-size: 14px; font-weight: bold; color: white;}
+    .team-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 30px; padding: 8px 20px; font-size: 14px; color: #222; }
+    .team-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .team-row strong { font-weight: 700; color: #1b365d; min-width: 85px; }
+
+    /* ─── COLUMNS ─── */
+    .columns { display: grid; grid-template-columns: 360px 1fr; gap: 15px; flex: 1; height: 100%; min-height: 0; }
+    .col-left { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+    .col-right { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+
+    /* ─── CARDS ─── */
+    .card { background: white; border-radius: 6px; border: 1px solid #e2e8f0; border-bottom: 4px solid #ccc; display: flex; flex-direction: column; min-height: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .card-header { padding: 6px 12px; font-size: 13px; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Text Cards styling */
+    .text-card { flex-shrink: 0; }
+    .text-card .card-body { padding: 10px 12px; font-size: 13px; line-height: 1.45; color: #333; }
+    
+    /* Image Cards styling */
+    .img-card { display: flex; flex-direction: column; min-height: 0; }
+    .img-card .card-body { padding: 10px; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+    
+    p { margin: 0 0 4px 0; }
+
+    /* Text Colors */
+    .bg-abstract { background: linear-gradient(90deg, #ea580c, #f97316); } .text-card:nth-child(1) { border-bottom-color: #f97316; }
+    .bg-problem { background: linear-gradient(90deg, #dc2626, #ef4444); } .text-card:nth-child(2) { border-bottom-color: #ef4444; }
+    .bg-objectives { background: linear-gradient(90deg, #15803d, #22c55e); } .text-card:nth-child(3) { border-bottom-color: #22c55e; }
+    .bg-proposed   { background: linear-gradient(90deg, #1d4ed8, #3b82f6); } .text-card:nth-child(4) { border-bottom-color: #3b82f6; }
+    .bg-method { background: linear-gradient(90deg, #5b21b6, #8b5cf6); } .text-card:nth-child(5) { border-bottom-color: #8b5cf6; }
+    .bg-adv { background: linear-gradient(90deg, #0f766e, #14b8a6); } .text-card:nth-child(6) { border-bottom-color: #14b8a6; }
+    .bg-app { background: linear-gradient(90deg, #475569, #64748b); } .text-card:nth-child(7) { border-bottom-color: #64748b; }
+    
+    /* Image Colors */
+    .bg-cert { background: linear-gradient(90deg, #4338ca, #6366f1); } .card.cert-card { border-bottom-color: #6366f1; }
+    .bg-arch { background: linear-gradient(90deg, #581c87, #7e22ce); } .card.arch { border-bottom-color: #7e22ce; }
+    .bg-flow { background: linear-gradient(90deg, #0369a1, #0ea5e9); } .card.flow { border-bottom-color: #0ea5e9; }
+    .bg-results { background: linear-gradient(90deg, #0f766e, #14b8a6); } .card.results { border-bottom-color: #14b8a6; }
+
+    strong { color: #1e293b; }
+    ul.minimal-list { list-style: none; padding-left: 0; margin: 0; }
+    ul.minimal-list li { position: relative; padding-left: 12px; margin-bottom: 2px; }
+    ul.minimal-list li::before { content: '•'; position: absolute; left: 0; top: 0; color: inherit; font-weight: bold; font-size: 14px; }
+    
+    .text-card:nth-child(3) .card-body ul li::before { color: #15803d; }
+    .text-card:nth-child(5) .card-body ul li::before { color: #8b5cf6; }
+    .text-card:nth-child(6) .card-body ul li::before { color: #0f766e; }
+    .text-card:nth-child(7) .card-body ul li::before { color: #475569; }
+
+    /* Images Container: Borderless, tightly wrapping the actual screenshot */
+    .img-box { width: 100%; height: 100%; overflow: hidden; background: transparent; display: flex; justify-content: center; align-items: center; position: relative; flex: 1; min-height: 0; border: none; }
+    .img-box img { width: 100%; height: 100%; max-height: 100%; object-fit: contain; display: block; z-index: 2; }
+  </style>
+</head>
+<body>
+
+  <div class="poster-container">
+    <div class="content-wrapper">
+
+      <!-- TOP TITLE HEADER -->
+      <div class="top-header">
+        <div class="logo-container">
+          <img src="mlrit_logo.png" alt="MLRIT Logo">
+        </div>
+        <div class="center-title-container">
+          <div class="expo-title-box">
+            <div class="expo-title">PROJECT POSTER PRESENTATION</div>
+          </div>
+          <h1>VeriChain: AI-Enhanced Blockchain Certificate System</h1>
+        </div>
+        <div class="right-spacer"></div>
+      </div>
+
+      <!-- TEAM DETAILS -->
+      <div class="team-details">
+        <div class="card-header bg-team">TEAM DETAILS</div>
+        <div class="team-content">
+          <div style="display:flex; flex-direction: column; gap: 8px;">
+            <div class="team-row">👤 <strong>Davath Balakrishna</strong> • 22R21A05M2 </div>
+            <div class="team-row">👤 <strong>Adepu Somanshu Dev</strong> • 22R21A05K4 </div>
+            <div class="team-row">👤 <strong>Burra Madhuri</strong> • 22R21A05L3 </div>
+            <div class="team-row">👤 <strong>Nallabothu Kalyan Ram</strong> • 22R21A05P2 </div>
+            <div class="team-row" style="margin-top: 2px;">🎓 <strong>Guide:Dr.Shaik Mohammed Ilias</strong> • Assistant Professor </div>
+          </div>
+          <div style="display:flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 8px; color:#475569;">
+            <div class="team-row"><strong>Department of Computer Science and Engineering</strong></div>
+            <div class="team-row">Batch 2022 - 2026</div>
+            <div class="team-row">Final Year Project Expo</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNS -->
+      <div class="columns">
+
+        <!-- ======================= LEFT COLUMN ======================= -->
+        <div class="col-left">
+
+          <!-- 1. ABSTRACT -->
+          <div class="card text-card">
+            <div class="card-header bg-abstract">ABSTRACT</div>
+            <div class="card-body">
+              <p>An AI-enhanced application using Polygon blockchain to automate and secure proof-of-existence. Anchors SHA-256 hashes on-chain for verifiability, uses Gemini AI for classification, and IPFS for permanent access.</p>
+            </div>
+          </div>
+
+          <!-- 2. PROBLEM STATEMENT -->
+          <div class="card text-card">
+            <div class="card-header bg-problem">PROBLEM STATEMENT</div>
+            <div class="card-body">
+              <p>Traditional document certification is highly vulnerable to forgery and data loss from centralized databases, relying on slow, costly, and manual verification processes.</p>
+            </div>
+          </div>
+
+          <!-- 3. OBJECTIVES -->
+          <div class="card text-card">
+            <div class="card-header bg-objectives">OBJECTIVES</div>
+            <div class="card-body">
+              <ul class="minimal-list">
+                <li>Eliminate centralized points of failure.</li>
+                <li>Provide cryptographic proofs.</li>
+                <li>Ensure instant verification.</li>
+                <li>Protect privacy via client-side hashing.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 4. PROPOSED STATEMENT -->
+          <div class="card text-card">
+            <div class="card-header bg-proposed">PROPOSED STATEMENT</div>
+            <div class="card-body">
+              <p>A Web3 application where users hash files locally. Hashes are anchored immutably on <strong>Polygon</strong>. <strong>IPFS</strong> hosts public files, while <strong>Gemini AI</strong> provides document analysis before certification.</p>
+            </div>
+          </div>
+
+          <!-- 5. METHODOLOGY -->
+          <div class="card text-card">
+            <div class="card-header bg-method">METHODOLOGY</div>
+            <div class="card-body">
+              <ul class="minimal-list" style="font-size:12px;">
+                <li><strong>1. File Upload:</strong> Processed &amp; hashed locally.</li>
+                <li><strong>2. AI Analysis:</strong> Classifies &amp; checks exact fraud risk.</li>
+                <li><strong>3. IPFS Storage:</strong> Files uploaded for CID.</li>
+                <li><strong>4. Blockchain:</strong> Smart Contract stores Hash + CID.</li>
+                <li><strong>5. Verification:</strong> Direct on-chain query confirms authenticity.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 6. ADVANTAGES -->
+          <div class="card text-card">
+            <div class="card-header bg-adv">ADVANTAGES</div>
+            <div class="card-body">
+              <ul class="minimal-list">
+                <li>100% Immutable and Tamper-Proof</li>
+                <li>Decentralized &amp; Privacy-Preserving</li>
+                <li>AI-Assisted Easy Auditing</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 7. APPLICATIONS -->
+          <div class="card text-card">
+            <div class="card-header bg-app">APPLICATIONS</div>
+            <div class="card-body">
+              <ul class="minimal-list">
+                <li>Academic Degree Issuance &amp; Verification.</li>
+                <li>Real Estate &amp; Land Registry Records.</li>
+                <li>Supply Chain Authenticity Proofs.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- SWAP 8: CERTIFICATE ON THE LEFT (Matches Tall Aspect Ratio!) -->
+          <div class="card img-card cert-card" style="flex: 1;">
+            <div class="card-header bg-cert">BLOCKCHAIN CERTIFICATE</div>
+            <div class="card-body">
+              <div class="img-box">
+                <img src="certificate.png" alt="Example Certificate Output">
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- /Left Column -->
+
+
+        <!-- ======================= RIGHT COLUMN ======================= -->
+        <div class="col-right">
+
+          <!-- 1. SYSTEM ARCHITECTURE IMAGE -->
+          <div class="card img-card arch" style="flex: 0.6;">
+            <div class="card-header bg-arch">SYSTEM ARCHITECTURE</div>
+            <div class="card-body">
+              <div class="img-box">
+                <img src="system_architecture.png" alt="System Architecture Diagram">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. GENERATION FLOW -->
+          <div class="card img-card flow" style="flex: 1.05;">
+            <div class="card-header bg-flow">CERTIFICATE GENERATION FLOW</div>
+            <div class="card-body">
+              <div class="img-box">
+                <img src="cert_gen_flow.png" alt="Certificate Generation Flow Diagram">
+              </div>
+            </div>
+          </div>
+          
+          <!-- 3. VERIFICATION FLOW -->
+          <div class="card img-card flow" style="flex: 1.05;">
+            <div class="card-header bg-flow">CERTIFICATE VERIFICATION FLOW</div>
+            <div class="card-body">
+              <div class="img-box">
+                <img src="cert_verif_flow.png" alt="Certificate Verification Flow Diagram">
+              </div>
+            </div>
+          </div>
+
+          <!-- SWAP 4: HOME SCREEN ON THE RIGHT (Matches Wide Aspect Ratio!) -->
+          <div class="card img-card results" style="flex: 1.2;">
+            <div class="card-header bg-results">APPLICATION HOME SCREEN</div>
+            <div class="card-body">
+              <div class="img-box">
+                <img src="home_page.png" alt="VeriChain Home Page">
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- /Right Col -->
+
+      </div><!-- /Columns -->
+
+    </div><!-- /Content Wrapper -->
+  </div>
+
+</body>
+</html>
