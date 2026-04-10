@@ -1,38 +1,30 @@
-// Gemini AI wrapper for VeriChain
+// Gemini AI wrapper for VeriChain — calls proxied through backend (API key stays server-side)
 import * as XLSX from 'xlsx';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
 async function callGemini(prompt, retries = 3) {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (!apiKey || apiKey === 'your_gemini_api_key_here') {
-        throw new Error('Gemini API key not configured. Add VITE_GEMINI_API_KEY to frontend/.env');
-    }
-
     for (let attempt = 0; attempt < retries; attempt++) {
-        const res = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+        const res = await fetch(`${BACKEND_URL}/api/ai`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { temperature: 0.4, maxOutputTokens: 1024 }
-            })
+            body: JSON.stringify({ prompt })
         });
 
         if (res.status === 429) {
             const waits = [5000, 15000, 30000];
             const wait = waits[attempt] || 30000;
-            console.warn(`Gemini rate limited. Retrying in ${wait / 1000}s...`);
+            console.warn(`AI rate limited. Retrying in ${wait / 1000}s...`);
             await new Promise(r => setTimeout(r, wait));
             continue;
         }
 
         if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err?.error?.message || `Gemini API error (${res.status})`);
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err?.error || `AI error (${res.status})`);
         }
 
         const data = await res.json();
-        return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        return data.text || '';
     }
 
     throw new Error('AI is busy right now. Please wait a moment and try again.');
