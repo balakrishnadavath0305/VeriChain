@@ -26,24 +26,41 @@ export default function My({ walletAddress: propWallet }) {
   const loadCertificates = async (addr) => {
     setLoading(true);
     try {
-      // Always fetch from blockchain first
+      // Fetch from blockchain (which might only return recent ones due to RPC block limits)
       const blockchainCerts = await getCertificatesByOwner(contractAddress, addr);
-      if (blockchainCerts.length > 0) {
-        setCerts(blockchainCerts);
-        setSource('blockchain');
-        return;
-      }
-      // If blockchain returned 0 — either no certs yet, or RPC issue
-      // Show localStorage certs with a 'pending sync' label so user knows
+
+      // Fetch from local cache
       const local = JSON.parse(localStorage.getItem('my_hashes') || '[]');
       const myLocal = local.filter(c => !c.owner || c.owner?.toLowerCase() === addr.toLowerCase());
-      setCerts(myLocal);
-      // Only say 'local' if there actually are local certs, else 'blockchain' (just empty)
-      setSource(myLocal.length > 0 ? 'local' : 'blockchain');
+
+      // Merge both, preferring blockchain data, to ensure old certificates aren't lost
+      const merged = [...blockchainCerts];
+      const blockchainHashes = new Set(blockchainCerts.map(c => c.hash));
+
+      myLocal.forEach(localCert => {
+        if (!blockchainHashes.has(localCert.hash)) {
+          merged.push(localCert);
+        }
+      });
+
+      // Sort by newest first by default
+      merged.sort((a, b) => b.timestamp - a.timestamp);
+
+      setCerts(merged);
+
+      // If we have certs in our local cache that the blockchain didn't return (due to RPC limits), show pending
+      const hasPending = myLocal.some(c => !blockchainHashes.has(c.hash));
+      if (merged.length > 0) {
+        setSource(hasPending ? 'local' : 'blockchain');
+      } else {
+        setSource('');
+      }
+
     } catch {
       const local = JSON.parse(localStorage.getItem('my_hashes') || '[]');
-      setCerts(local);
-      setSource('local');
+      const myLocal = local.filter(c => !c.owner || c.owner?.toLowerCase() === addr.toLowerCase());
+      setCerts(myLocal.sort((a, b) => b.timestamp - a.timestamp));
+      setSource(myLocal.length > 0 ? 'local' : '');
     } finally {
       setLoading(false);
     }
@@ -133,8 +150,8 @@ export default function My({ walletAddress: propWallet }) {
                 <div className="flex items-center gap-2">
                   {source && (
                     <span className={`text-xs px-2 py-1 rounded-full ${source === 'blockchain'
-                        ? 'bg-green-500/10 text-green-400 border border-green-400/20'
-                        : 'bg-yellow-500/10 text-yellow-400 border border-yellow-400/20'
+                      ? 'bg-green-500/10 text-green-400 border border-green-400/20'
+                      : 'bg-yellow-500/10 text-yellow-400 border border-yellow-400/20'
                       }`}>
                       {source === 'blockchain' ? '⛓ From blockchain' : '⏳ Pending sync — certify on Amoy to update'}
                     </span>
